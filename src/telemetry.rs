@@ -30,7 +30,7 @@ pub struct Signal {
     /// Tags in the form "key:value" to attach to the signal
     pub payload: Vec<String>,
     /// If `true`, mark the signal as a testing signal and only show it in a dedicated test mode UI
-    pub is_test_mode: bool,
+    pub is_test_mode: String,
 }
 
 /// The TelemetryDeck api client
@@ -110,7 +110,7 @@ impl TelemetryDeck {
             session_id: self.session_id.clone(),
             signal_type: signal_type.to_string(),
             payload,
-            is_test_mode: is_test_mode.unwrap_or(false),
+            is_test_mode: is_test_mode.unwrap_or(false).to_string(),
         }
     }
 
@@ -171,7 +171,7 @@ mod tests {
         assert_eq!(result.client_user, "rust".to_string());
         assert_eq!(result.signal_type, "signal_type".to_string());
         assert_eq!(result.app_id, "1234".to_string());
-        assert!(!result.is_test_mode);
+        assert_eq!(result.is_test_mode, "false".to_string());
         assert_eq!(
             result.payload,
             vec![format!("telemetryClientVersion:{VERSION}")]
@@ -188,7 +188,7 @@ mod tests {
         );
         assert_eq!(result.signal_type, "signal_type".to_string());
         assert_eq!(result.app_id, "1234".to_string());
-        assert!(!result.is_test_mode);
+        assert_eq!(result.is_test_mode, "false".to_string());
         assert_eq!(
             result.payload,
             vec![format!("telemetryClientVersion:{VERSION}")]
