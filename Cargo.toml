@@ -1,0 +1,30 @@
+[package]
+name = "telemetrydeck-wasm"
+authors = ["Konstantin Kostov <konstantin@headbright.be>"]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+categories = ["analytics", "telemetry", "wasm"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# HTTP requests library for WASM Apps. It provides idiomatic Rust API for the browser's fetch and WebSocket API.
+reqwasm = "0.2"
+wasm-bindgen-futures = "0.4"
+
+# Serialization of outgoing Signals
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.79"
+chrono = { version = "0.4.19", default-features = false, features = [
+  "wasmbind",
+  "serde",
+  "clock",
+] }
+
+# Generate session ids which are in uuid v4 format
+uuid = { version = "0.8.2", features = ["v4", "wasm-bindgen"] }
+
+# Outgoing signals hash the user identifier
+sha2 = "0.10.1"
