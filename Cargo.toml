@@ -1,5 +1,6 @@
 [package]
 name = "telemetrydeck-wasm"
+description = "(unofficial) TelemetryDeck client for fast and reliable libraries and apps using Rust and WebAssembly"
 authors = ["Konstantin Kostov <konstantin@headbright.be>"]
 version = "0.1.0"
 edition = "2021"
