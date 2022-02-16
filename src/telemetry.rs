@@ -6,8 +6,8 @@ use std::collections::HashMap;
 use uuid::Uuid;
 use wasm_bindgen_futures::spawn_local;
 
-const VERSION: &'static str = env!("CARGO_PKG_VERSION");
-const CLIENT_VERSION_KEY: &'static str = "telemetryClientVersion";
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+const CLIENT_VERSION_KEY: &str = "telemetryClientVersion";
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -70,7 +70,7 @@ impl TelemetryDeck {
 
     /// Reset the session id for future signals
     pub fn reset_session(&mut self, new_session_id: Option<String>) {
-        self.session_id = new_session_id.unwrap_or(Uuid::new_v4().to_string());
+        self.session_id = new_session_id.unwrap_or_else(|| Uuid::new_v4().to_string());
     }
 
     /// Send a telemetry signal
@@ -162,7 +162,7 @@ impl TelemetryDeck {
 #[cfg(test)]
 mod tests {
     use super::TelemetryDeck;
-    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
 
     #[test]
     fn create_signal_without_user() {
@@ -171,7 +171,7 @@ mod tests {
         assert_eq!(result.client_user, "rust".to_string());
         assert_eq!(result.signal_type, "signal_type".to_string());
         assert_eq!(result.app_id, "1234".to_string());
-        assert_eq!(result.is_test_mode, false);
+        assert!(!result.is_test_mode);
         assert_eq!(
             result.payload,
             vec![format!("telemetryClientVersion:{VERSION}")]
@@ -188,7 +188,7 @@ mod tests {
         );
         assert_eq!(result.signal_type, "signal_type".to_string());
         assert_eq!(result.app_id, "1234".to_string());
-        assert_eq!(result.is_test_mode, false);
+        assert!(!result.is_test_mode);
         assert_eq!(
             result.payload,
             vec![format!("telemetryClientVersion:{VERSION}")]
