@@ -58,7 +58,8 @@ impl TelemetryDeck {
         is_test_mode: Option<bool>,
         float_value: Option<f64>,
     ) {
-        let signal = self.create_signal(signal_type, client_user, payload, is_test_mode, float_value);
+        let signal =
+            self.create_signal(signal_type, client_user, payload, is_test_mode, float_value);
         self.send_one(signal);
     }
 
@@ -108,7 +109,8 @@ impl TelemetryDeck {
         is_test_mode: Option<bool>,
         float_value: Option<f64>,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let signal = self.create_signal(signal_type, client_user, payload, is_test_mode, float_value);
+        let signal =
+            self.create_signal(signal_type, client_user, payload, is_test_mode, float_value);
         self.send_many_sync(vec![signal]).await
     }
 
@@ -130,10 +132,7 @@ impl TelemetryDeck {
         });
     }
 
-    async fn send_many_sync(
-        &self,
-        signals: Vec<Signal>,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    async fn send_many_sync(&self, signals: Vec<Signal>) -> Result<(), Box<dyn std::error::Error>> {
         let url = self.build_url();
         let client = reqwest::Client::new();
         let body = serde_json::to_string(&signals)?;
