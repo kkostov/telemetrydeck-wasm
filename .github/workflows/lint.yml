@@ -34,8 +34,36 @@ jobs:
           command: fmt
           args: --all -- --check
 
-  clippy:
-    name: Clippy
+  clippy-native:
+    name: Clippy (Native)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: clippy
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-clippy-native-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            cargo-${{ runner.os }}-clippy-native-
+            cargo-${{ runner.os }}-
+
+      - name: Run clippy for native
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets -- -D warnings
+
+  clippy-wasm:
+    name: Clippy (WASM)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -52,13 +80,13 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: cargo-${{ runner.os }}-clippy-${{ hashFiles('**/Cargo.toml') }}
+          key: cargo-${{ runner.os }}-clippy-wasm-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
-            cargo-${{ runner.os }}-clippy-
+            cargo-${{ runner.os }}-clippy-wasm-
             cargo-${{ runner.os }}-
 
-      - name: Run clippy
+      - name: Run clippy for WASM
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-targets -- -D warnings
+          args: --features wasm --target wasm32-unknown-unknown -- -D warnings
