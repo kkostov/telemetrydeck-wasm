@@ -10,18 +10,19 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          profile: minimal
           components: rustfmt
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
             target
           key: cargo-${{ runner.os }}-fmt-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
@@ -29,27 +30,25 @@ jobs:
             cargo-${{ runner.os }}-
 
       - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo fmt --all -- --check
 
   clippy-native:
     name: Clippy (Native)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          profile: minimal
           components: clippy
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
             target
           key: cargo-${{ runner.os }}-clippy-native-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
@@ -57,28 +56,26 @@ jobs:
             cargo-${{ runner.os }}-
 
       - name: Run clippy for native
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets -- -D warnings
+        run: cargo clippy --all-targets -- -D warnings
 
   clippy-wasm:
     name: Clippy (WASM)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          components: clippy
-          target: wasm32-unknown-unknown
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: wasm32-unknown-unknown
+
+      - uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
             target
           key: cargo-${{ runner.os }}-clippy-wasm-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
@@ -86,7 +83,4 @@ jobs:
             cargo-${{ runner.os }}-
 
       - name: Run clippy for WASM
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --features wasm --target wasm32-unknown-unknown -- -D warnings
+        run: cargo clippy --features wasm --target wasm32-unknown-unknown -- -D warnings

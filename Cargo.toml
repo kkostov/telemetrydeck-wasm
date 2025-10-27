@@ -21,13 +21,13 @@ wasm = ["reqwasm", "wasm-bindgen-futures", "chrono/wasmbind", "uuid/wasm-bindgen
 [dependencies]
 # Serialization of outgoing Signals
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0.79"
+serde_json = "1.0"
 
 # Outgoing signals hash the user identifier
-sha2 = "0.10.1"
+sha2 = "0.10"
 
 # Date/time handling (platform-agnostic base)
-chrono = { version = "0.4.19", default-features = false, features = [
+chrono = { version = "0.4", default-features = false, features = [
   "serde",
   "clock",
 ] }
@@ -41,4 +41,4 @@ wasm-bindgen-futures = { version = "0.4", optional = true }
 
 # Native-specific dependencies (always available, but only used when wasm feature is disabled)
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
-tokio = { version = "1.42", features = ["rt", "macros"] }
+tokio = { version = "1.48", features = ["rt", "macros"] }
