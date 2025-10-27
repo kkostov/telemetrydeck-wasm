@@ -2,8 +2,8 @@
 name = "telemetrydeck-wasm"
 description = "(unofficial) TelemetryDeck client for fast and reliable libraries and apps using Rust and WebAssembly"
 authors = ["Konstantin Kostov <konstantin@headbright.be>"]
-version = "0.2.0"
-edition = "2021"
+version = "0.3.0"
+edition = "2024"
 license = "MIT"
 readme = "README.md"
 categories = ["api-bindings", "wasm"]
@@ -14,22 +14,31 @@ exclude = [".github/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-# HTTP requests library for WASM Apps. It provides idiomatic Rust API for the browser's fetch and WebSocket API.
-reqwasm = "0.2"
-wasm-bindgen-futures = "0.4"
+[features]
+default = []
+wasm = ["reqwasm", "wasm-bindgen-futures", "chrono/wasmbind", "uuid/wasm-bindgen"]
 
+[dependencies]
 # Serialization of outgoing Signals
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0.79"
-chrono = { version = "0.4.19", default-features = false, features = [
-  "wasmbind",
+serde_json = "1.0"
+
+# Outgoing signals hash the user identifier
+sha2 = "0.10"
+
+# Date/time handling (platform-agnostic base)
+chrono = { version = "0.4", default-features = false, features = [
   "serde",
   "clock",
 ] }
 
-# Generate session ids which are in uuid v4 format
-uuid = { version = "0.8.2", features = ["v4", "wasm-bindgen"] }
+# Generate session ids which are in uuid v4 format (platform-agnostic base)
+uuid = { version = "0.8.2", features = ["v4"] }
 
-# Outgoing signals hash the user identifier
-sha2 = "0.10.1"
+# WASM-specific dependencies (only when wasm feature is enabled)
+reqwasm = { version = "0.2", optional = true }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+
+# Native-specific dependencies (always available, but only used when wasm feature is disabled)
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+tokio = { version = "1.48", features = ["rt", "macros"] }

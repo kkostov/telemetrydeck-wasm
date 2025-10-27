@@ -1,4 +1,3 @@
-extern crate telemetrydeck_wasm;
 use telemetrydeck_wasm::TelemetryDeck;
 use yew::prelude::*;
 
@@ -25,8 +24,8 @@ impl Component for Model {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::AddOne => {
-                // broadcast a signal whenever we handle this message
-                self.telemetry.send("addOne", None, None, None);
+                // Broadcast a signal whenever we handle this message
+                self.telemetry.send("addOne", None, None, None, None);
                 self.value += 1;
                 true
             }
@@ -45,5 +44,5 @@ impl Component for Model {
 }
 
 fn main() {
-    yew::start_app::<Model>();
+    yew::Renderer::<Model>::new().render();
 }
